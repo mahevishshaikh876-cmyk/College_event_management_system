@@ -62,19 +62,19 @@ The College Event Management System is a web application developed using Angular
 ## Screenshots
 
 ### Home Page
-![Home Page](hm.png)
+![Home Page](images/hm.png)
 
 ### About Page
-![About Page](ab.png)
+![About Page](images/ab.png)
 
 ### Contact Page
-![Contact Page](cn.png)
+![Contact Page](images/cn.png)
 
 ### Register Page
-![Register Page](reg.png)
+![Register Page](images/reg.png)
 
 ### Admin Login Page
-![Admin Login Page](ad_login.png)
+![Admin Login Page](images/ad_login.png)
 
 ### Admin Dashboard Page
-![Admin Dashboard Page](adp.png)
+![Admin Dashboard Page](images/adp.png)
