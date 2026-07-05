@@ -1,6 +1,80 @@
-![home page](hm.png)
-![contact page](cn.png)
-![register page](reg.png)
-![about page](ab.png)
-![admin_login page](ad_login.png)
-![admin_dashboard page](adp.png)
+# College Event Management System
+
+## Overview
+
+The College Event Management System is a web application developed using Angular, Flask, and MySQL. It helps students register for college events while allowing administrators to manage events and registrations through a dedicated dashboard.
+
+---
+
+## Features
+
+### Student
+- View all upcoming events
+- Search and filter events
+- Register for events
+- View event details
+- Contact page
+
+### Admin
+- Secure login
+- Add new events
+- Delete events
+- View student registrations
+- Export registration data
+
+---
+
+## Technologies Used
+
+### Frontend
+- Angular
+- HTML
+- CSS
+- TypeScript
+
+### Backend
+- Python
+- Flask
+- Flask SQLAlchemy
+- Flask CORS
+
+### Database
+- MySQL
+
+## Modules
+
+- Home
+- About
+- Contact
+- Event Registration
+- Admin Login
+- Admin Dashboard
+  
+## Future Enhancements
+
+- Email Notifications
+- QR Code Registration
+- Online Payment
+- Certificate Generation
+- Student Login
+- Event Analytics
+
+## Screenshots
+
+### Home Page
+![Home Page](hm.png)
+
+### About Page
+![About Page](ab.png)
+
+### Contact Page
+![Contact Page](cn.png)
+
+### Register Page
+![Register Page](reg.png)
+
+### Admin Login Page
+![Admin Login Page](ad_login.png)
+
+### Admin Dashboard Page
+![Admin Dashboard Page](adp.png)
