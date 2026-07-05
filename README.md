@@ -1,0 +1,6 @@
+![home page](hm.png)
+![contact page](cn.png)
+![register page](reg.png)
+![about page](ab.png)
+![admin_login page](ad_login.png)
+![admin_dashboard page](adp.png)
