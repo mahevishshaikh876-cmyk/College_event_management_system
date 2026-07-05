@@ -1,0 +1,309 @@
+<!-- Dashboard Header -->
+<div class="admin-header">
+    <div class="admin-title">
+        <h1>Admin Dashboard</h1>
+        <p class="mt-1" style="color: var(--text-muted); font-size: 0.9rem;">
+            Manage college events and review student registrations.
+        </p>
+    </div>
+
+    <a routerLink="/admin-login" class="btn btn-secondary btn-sm">
+        Sign Out
+    </a>
+</div>
+
+<!-- Stats Panel -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Total Events</span>
+        <span class="stat-value">{{ events.length }}</span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Total Registrations</span>
+        <span class="stat-value">{{ registrations.length }}</span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Active Categories</span>
+        <span class="stat-value" style="color:#0d9488;">
+            {{ category_count }}
+        </span>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+
+    <!-- Add Event -->
+    <div class="card" style="height: fit-content;">
+
+        <h2 class="mb-3" style="font-size:1.25rem;">
+            Create New Event
+        </h2>
+
+        <form (ngSubmit)="addEvent()">
+
+            <div class="form-group">
+                <label class="form-label">Event Title</label>
+
+                <input type="text" class="form-control" [(ngModel)]="newEvent.title" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Category</label>
+
+                <select class="form-control" [(ngModel)]="newEvent.category" name="category">
+
+                    <option value="Technical">Technical</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Cultural">Cultural</option>
+                    <option value="Competitions">Competitions</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Description
+                </label>
+
+                <textarea class="form-control" rows="3" [(ngModel)]="newEvent.description" name="description" required>
+                </textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Venue
+                </label>
+
+                <input type="text" class="form-control" [(ngModel)]="newEvent.venue" name="venue" required>
+
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+
+                <div class="form-group">
+
+                    <label class="form-label">Date</label>
+
+                    <input type="date" class="form-control" [(ngModel)]="newEvent.date" name="date" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label class="form-label">Time</label>
+
+                    <input type="time" class="form-control" [(ngModel)]="newEvent.time" name="time" required>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Max Seats
+                </label>
+
+                <input type="number" class="form-control" [(ngModel)]="newEvent.max_capacity" name="max_capacity"
+                    required>
+
+            </div>
+
+            <button class="btn btn-primary mt-2" type="submit" style="width:100%;">
+
+                Add Event
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:2rem;">
+                <!-- Active Events List -->
+                <div class="content-card">
+                    <h2 class="section-title">Active Events</h2>
+                
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Date / Time</th>
+                                    <th>Venue</th>
+                                    <th>Capacity</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                
+                            <tbody>
+                
+                                @if (events.length > 0) {
+                
+                                @for (event of events; track event.id) {
+                
+                                <tr>
+                
+                                    <td class="event-title-cell">
+                                        {{ event.title }}
+                                    </td>
+                
+                                    <td>
+                                        <span class="badge" [ngClass]="'badge-' + event.category.toLowerCase()">
+                                            {{ event.category }}
+                                        </span>
+                                    </td>
+                
+                                    <td>
+                                        {{ event.date }} at {{ event.time }}
+                                    </td>
+                
+                                    <td>
+                                        {{ event.venue }}
+                                    </td>
+                
+                                    <td>
+                                        {{ event.current_registrations }}
+                                        /
+                                        {{ event.max_capacity }}
+                                    </td>
+                
+                                    <td>
+                
+                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteEvent(event.id)">
+                
+                                            Delete
+                
+                                        </button>
+                
+                                    </td>
+                
+                                </tr>
+                
+                                }
+                
+                                } @else {
+                
+                                <tr>
+                
+                                    <td colspan="6" class="text-center" style="padding:2rem;">
+                
+                                        No active events. Use the form on the left to create one.
+                
+                                    </td>
+                
+                                </tr>
+                
+                                }
+                
+                            </tbody>
+                
+                        </table>
+                    </div>
+                </div>
+                        <!-- Student Registrations Directory -->
+                        <div class="content-card">
+                        
+                            <div class="section-title">
+                        
+                                <span>Registered Students Directory</span>
+                        
+                                @if (registrations.length > 0) {
+                        
+                                <button type="button" class="btn btn-secondary btn-sm" (click)="exportCSV()">
+                        
+                                    <span>📥</span> Export to CSV
+                        
+                                </button>
+                        
+                                }
+                        
+                            </div>
+                        
+                            <div class="table-container">
+                        
+                                <table class="admin-table">
+                        
+                                    <thead>
+                        
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>Email Address</th>
+                                            <th>Roll Number</th>
+                                            <th>Branch</th>
+                                            <th>Event</th>
+                                            <th>Registered On</th>
+                                        </tr>
+                        
+                                    </thead>
+                        
+                                    <tbody>
+                        
+                                        @if (registrations.length > 0) {
+                        
+                                        @for (reg of registrations; track reg.student_roll) {
+                        
+                                        <tr>
+                        
+                                            <td class="event-title-cell">
+                                                {{ reg.student_name }}
+                                            </td>
+                        
+                                            <td>
+                                                {{ reg.student_email }}
+                                            </td>
+                        
+                                            <td>
+                                                {{ reg.student_roll }}
+                                            </td>
+                        
+                                            <td>
+                                                {{ reg.student_branch }}
+                                            </td>
+                        
+                                            <td style="color: var(--primary); font-weight:500;">
+                        
+                                                {{ reg.event_title }}
+                        
+                                            </td>
+                        
+                                            <td>
+                                                {{ reg.registration_date }}
+                                            </td>
+                        
+                                        </tr>
+                        
+                                        }
+                        
+                                        } @else {
+                        
+                                        <tr>
+                        
+                                            <td colspan="6" class="text-center" style="padding:2rem;">
+                        
+                                                No student registrations yet.
+                        
+                                            </td>
+                        
+                                        </tr>
+                        
+                                        }
+                        
+                                    </tbody>
+                        
+                                </table>
+                        
+                            </div>
+                        
+                        </div>
+                        
+                        </div>
+                        
+                        </div>

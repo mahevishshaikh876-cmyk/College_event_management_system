@@ -1,0 +1,86 @@
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-brand">
+
+        <img src="assets/images/smsmpitr_logo.png" alt="logo" class="hero-logo">
+
+        <p class="hero-subtitle">
+            {{ college_name }} — {{ college_tagline }}
+        </p>
+
+    </div>
+
+    <h1>College Event Portal</h1>
+
+    <p>
+        Discover and register for events easily.
+    </p>
+
+    <a routerLink="/admin" class="btn btn-secondary">
+        Admin Login
+    </a>
+</section>
+
+---
+
+<!-- STATS -->
+<div class="stats-row">
+
+    <div class="stat-box">
+        <strong>{{ total_events }}</strong>
+        <span>Upcoming Events</span>
+    </div>
+
+    <div class="stat-box">
+        <strong>{{ total_registrations }}</strong>
+        <span>Total Registrations</span>
+    </div>
+
+    <div class="stat-box">
+        <strong>{{ total_categories }}</strong>
+        <span>Categories</span>
+    </div>
+
+</div>
+
+---
+
+<!-- EVENTS -->
+<div class="events-grid">
+
+    <div class="card event-card" *ngFor="let event of events">
+
+        <div class="event-header">
+            <span class="badge">
+                {{ event.category }}
+            </span>
+        </div>
+
+        <h2>{{ event.title }}</h2>
+        <p>{{ event.description }}</p>
+
+        <div class="event-details">
+            <p>📅 {{ event.date }}</p>
+            <p>⏰ {{ event.time }}</p>
+            <p>📍 {{ event.venue }}</p>
+        </div>
+
+        <div class="capacity-section">
+            <p>
+                {{ event.current_registrations }} / {{ event.max_capacity }}
+            </p>
+
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill"
+                    [style.width.%]="(event.current_registrations / event.max_capacity) * 100">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary">
+            Register
+        </button>
+
+    </div>
+
+</div>
