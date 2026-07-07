@@ -1,0 +1,129 @@
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-brand">
+        <img src="assets/images/smsmpitr_logo.png" alt="College Logo" class="hero-logo">
+
+        <p class="hero-subtitle">
+            {{ college_name }} — {{ college_tagline }}
+        </p>
+    </div>
+
+    <h1>College Event Portal</h1>
+
+    <p>
+        Discover and register for exciting college events, competitions,
+        workshops and sports tournaments in one place.
+    </p>
+
+    <!-- <a routerLink="/admin-login" class="btn btn-secondary">
+        Admin Login
+    </a> -->
+
+</section>
+
+<!-- STATS -->
+
+<div class="stats-row">
+
+    <div class="stat-box">
+        <strong>{{ total_events }}</strong>
+        <span>Upcoming Events</span>
+    </div>
+
+    <div class="stat-box">
+        <strong>{{ total_registrations }}</strong>
+        <span>Total Registrations</span>
+    </div>
+
+    <div class="stat-box">
+        <strong>{{ total_categories }}</strong>
+        <span>Event Categories</span>
+    </div>
+
+</div>
+
+<!-- EVENTS -->
+
+<div class="events-grid">
+
+    <div class="card event-card" *ngFor="let event of events">
+
+        <!-- Header -->
+        <div class="event-header">
+
+            <div class="category-icon">
+                {{ event.icon }}
+            </div>
+
+            <span class="badge" [style.background]="event.badgeColor"
+                style="color:#111827;padding:6px 12px;border-radius:20px;">
+                {{ event.category }}
+            </span>
+
+        </div>
+
+        <!-- Title -->
+        <h3 class="event-title">
+            {{ event.title }}
+        </h3>
+
+        <!-- Description -->
+        <p class="event-description">
+            {{ event.description }}
+        </p>
+
+        <!-- Details -->
+
+        <div class="event-details">
+
+            <div class="detail-item">
+                📅 {{ event.date }}
+            </div>
+
+            <div class="detail-item">
+                ⏰ {{ event.time }}
+            </div>
+
+            <div class="detail-item">
+                📍 {{ event.venue }}
+            </div>
+
+        </div>
+
+        <!-- Capacity -->
+
+        <div class="capacity-section">
+
+            <div class="capacity-info">
+                <span>Spots Filled</span>
+
+                <span>
+                    {{ event.current_registrations }}
+                    /
+                    {{ event.max_capacity }}
+                </span>
+            </div>
+
+            <div class="progress-bar-bg">
+
+                <div class="progress-bar-fill" [style.width.%]="(event.current_registrations/event.max_capacity)*100">
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Button -->
+
+        <div class="event-footer">
+
+            <a routerLink="/register" class="btn btn-primary event-btn">
+                Register Now
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

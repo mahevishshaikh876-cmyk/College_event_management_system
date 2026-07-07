@@ -1,0 +1,157 @@
+<div class="form-container">
+    <div class="card">
+
+        <h1 class="mb-3">Event Registration</h1>
+
+        <!-- Event Details Preview Card -->
+        <div class="event-preview-card">
+
+            <div class="event-preview-title">
+                {{ event.title }}
+            </div>
+
+            <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.75rem;">
+                {{ event.description }}
+            </p>
+
+            <div class="event-meta">
+
+                <div class="meta-item">
+                    <span>📅</span>
+                    {{ event.date }}
+                </div>
+
+                <div class="meta-item">
+                    <span>⏰</span>
+                    {{ event.time }}
+                </div>
+
+                <div class="meta-item">
+                    <span>📍</span>
+                    {{ event.venue }}
+                </div>
+
+                <div class="meta-item">
+                    <span>👥</span>
+                    {{ event.max_capacity - event.current_registrations }}
+                    seats left
+                </div>
+
+            </div>
+
+        </div>
+
+        <form (ngSubmit)="register()">
+
+            <!-- Full Name -->
+
+            <div class="form-group">
+
+                <label for="student_name" class="form-label">
+                    Full Name
+                </label>
+
+                <input type="text" id="student_name" name="student_name" class="form-control"
+                    placeholder="Enter your full name" [(ngModel)]="student.student_name" required>
+
+            </div>
+
+            <!-- Email -->
+
+            <div class="form-group">
+
+                <label for="student_email" class="form-label">
+                    Email Address
+                </label>
+
+                <input type="email" id="student_email" name="student_email" class="form-control"
+                    placeholder="Enter your email address" [(ngModel)]="student.student_email" required>
+
+            </div>
+
+            <!-- Roll Number -->
+
+            <div class="form-group">
+
+                <label for="student_roll" class="form-label">
+                    Roll Number / Enrollment ID
+                </label>
+
+                <input type="text" id="student_roll" name="student_roll" class="form-control" placeholder="e.g. CS23001"
+                    [(ngModel)]="student.student_roll" required>
+
+            </div>
+
+            <!-- Branch -->
+
+            <div class="form-group">
+
+                <label for="student_branch" class="form-label">
+                    Branch / Department
+                </label>
+
+                <select id="student_branch" name="student_branch" class="form-control"
+                    [(ngModel)]="student.student_branch" required>
+
+                    <option value="">Select your branch</option>
+
+                    <option value="Computer Science (CSE)">
+                        Computer Science & Engineering
+                    </option>
+
+                    <option value="Information Technology (IT)">
+                        Information Technology
+                    </option>
+
+                    <option value="Electronics & Communication (ECE)">
+                        Electronics & Communication
+                    </option>
+
+                    <option value="Electrical Engineering (EE)">
+                        Electrical Engineering
+                    </option>
+
+                    <option value="Mechanical Engineering (ME)">
+                        Mechanical Engineering
+                    </option>
+
+                    <option value="Civil Engineering (CE)">
+                        Civil Engineering
+                    </option>
+
+                    <option value="Business Administration (BBA/MBA)">
+                        Business Administration
+                    </option>
+
+                    <option value="Basic Sciences (B.Sc/M.Sc)">
+                        Basic Sciences
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a routerLink="/" class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+
+                    Submit Registration
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>

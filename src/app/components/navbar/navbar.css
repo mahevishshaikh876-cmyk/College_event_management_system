@@ -1,0 +1,72 @@
+/* Navbar */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px 30px;
+    margin: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Logo Section */
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.college-info h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #2563eb;
+    font-weight: 700;
+}
+
+.college-info p {
+    margin: 3px 0 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Navigation */
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #374151;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.nav-links a.active {
+    background: #2563eb;
+    color: #fff;
+}

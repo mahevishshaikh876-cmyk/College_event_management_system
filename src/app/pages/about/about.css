@@ -1,0 +1,74 @@
+/* Hero Box */
+
+.page-hero {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+}
+/* Hero Heading */
+
+.page-hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+/* Hero Subtitle */
+
+.page-hero p {
+    font-size: 18px;
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+/* Card Heading */
+
+.info-card h3 {
+    font-size: 30px;
+    /* Bigger heading */
+    font-weight: 700;
+    /* Bold */
+    color: #1f2937;
+    margin-bottom: 18px;
+}
+
+/* Card Content */
+
+.info-card p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #6b7280;
+}
+/* Cards Grid */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* Individual Card */
+
+.info-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.info-card p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #6b7280;
+}

@@ -1,0 +1,35 @@
+<div class="login-container">
+    <div class="card">
+
+        <h2 class="text-center mb-1">Admin Portal</h2>
+
+        <p class="text-center mb-4" style="color: var(--text-muted); font-size: 0.9rem;">
+            Sign in to manage events and view registrations.
+        </p>
+
+        <form (ngSubmit)="login()">
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter admin username"
+                    [(ngModel)]="username" required autofocus>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+
+                <input type="password" id="password" name="password" class="form-control"
+                    placeholder="Enter admin password" [(ngModel)]="password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary login-btn">
+                Sign In
+            </button>
+
+        </form>
+
+    </div>
+</div>

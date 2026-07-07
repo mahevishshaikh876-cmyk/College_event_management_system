@@ -1,0 +1,255 @@
+/* ==========================
+   ADMIN DASHBOARD
+========================== */
+
+:host {
+    display: block;
+    background: #f5f7fb;
+    min-height: 100vh;
+    padding: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1f2937;
+}
+
+/* Header */
+
+.admin-header {
+    max-width: 1200px;
+    margin: 0 auto 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.admin-title h1 {
+    margin: 0;
+    font-size: 38px;
+    font-weight: 700;
+}
+
+.admin-title p {
+    margin-top: 8px;
+    color: #6b7280;
+}
+
+/* Stats */
+
+.stats-grid {
+    max-width: 1200px;
+    margin: 0 auto 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
+}
+
+.stat-label {
+    display: block;
+    color: #6b7280;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 34px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+/* Main Grid */
+
+.dashboard-grid {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+/* Cards */
+
+.card,
+.content-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
+    padding: 22px;
+}
+
+/* Form */
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: .25s;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .15);
+}
+
+textarea.form-control {
+    resize: none;
+}
+
+/* Buttons */
+
+.btn {
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: .3s;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: #fff;
+    padding: 12px;
+}
+
+.btn-primary:hover {
+    background: #4338ca;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    padding: 7px 12px;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-secondary {
+    background: #64748b;
+    color: white;
+    padding: 8px 14px;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+/* Tables */
+
+.table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table thead {
+    background: #f8fafc;
+}
+
+.admin-table th {
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background: #fafafa;
+}
+
+/* Section */
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* Badges */
+
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-technical {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.badge-sports {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.badge-cultural {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+.badge-competitions {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Responsive */
+
+@media(max-width:992px) {
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+}
