@@ -36,6 +36,7 @@ The College Event Management System is a web application developed using Angular
 - Python
 - Flask
 - Flask SQLAlchemy
+- flask CORS
 
 ### Database
 - MySQL
