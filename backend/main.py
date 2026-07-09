@@ -4,11 +4,16 @@ from urllib.parse import quote_plus
 from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, or_, func, text
-
+from flask_cors import CORS
 import config
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_college_event_key'
+CORS(
+    app,
+    resources={r"/api/*": {"origins": ["http://localhost:4200", "http://127.0.0.1:4200"]}},
+    supports_credentials=True,
+)
 
 # Configure SQLAlchemy to connect to MySQL database
 DB_NAME = 'collegedb'
@@ -56,6 +61,44 @@ class Registration(db.Model):
     student_branch = db.Column(db.String(100), nullable=False)
     registration_date = db.Column(db.DateTime, server_default=func.current_timestamp())
 
+
+def sync_event_registration_counts():
+    """Reconcile each event's registration count with the actual registrations table."""
+    events = Event.query.all()
+    changed = False
+
+    for event in events:
+        actual_count = Registration.query.filter(Registration.event_id == event.id).count()
+        if (event.current_registrations or 0) != actual_count:
+            event.current_registrations = actual_count
+            changed = True
+
+    if changed:
+        db.session.commit()
+
+    return events
+
+
+def get_registrations_with_event_titles():
+    """Return all registrations with the corresponding event title from the database."""
+    rows = []
+    registrations = Registration.query.order_by(Registration.registration_date.desc()).all()
+
+    for registration in registrations:
+        event = Event.query.get(registration.event_id)
+        rows.append({
+            'id': registration.id,
+            'student_name': registration.student_name,
+            'student_email': registration.student_email,
+            'student_roll': registration.student_roll,
+            'student_branch': registration.student_branch,
+            'registration_date': registration.registration_date,
+            'event_title': event.title if event else '[Deleted event]',
+        })
+
+    return rows
+
+
 def init_db():
     """Create tables and prepopulate default events if none exist."""
     with app.app_context():
@@ -64,6 +107,7 @@ def init_db():
             conn.execute(text(f'CREATE DATABASE IF NOT EXISTS {DB_NAME}'))
 
         db.create_all()
+        sync_event_registration_counts()
 
         if Event.query.count() == 0:
             sample_events = [
@@ -117,6 +161,7 @@ def init_db():
             ]
             db.session.add_all(sample_events)
             db.session.commit()
+            sync_event_registration_counts()
             print("Database initialized and populated with sample events.")
 
 # ----------------- ROUTES -----------------
@@ -220,9 +265,10 @@ def register(event_id):
         )
         db.session.add(reg)
 
-        # 4. Increment registration count
-        event.current_registrations = (event.current_registrations or 0) + 1
+        # 4. Synchronize registration count with the actual registrations table
+        event.current_registrations = Registration.query.filter(Registration.event_id == event_id).count()
         db.session.commit()
+        sync_event_registration_counts()
 
         flash(f'Success! You have successfully registered for "{event.title}".', 'success')
         return redirect(url_for('index'))
@@ -267,14 +313,9 @@ def admin_dashboard():
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin_login'))
         
+    sync_event_registration_counts()
     events = Event.query.order_by(Event.date.asc()).all()
-
-    registrations = (
-        db.session.query(Registration, Event.title.label('event_title'))
-        .join(Event)
-        .order_by(Registration.registration_date.desc())
-        .all()
-    )
+    registrations = get_registrations_with_event_titles()
 
     # registrations is list of tuples (Registration, event_title)
     category_count = len({e.category for e in events})
@@ -351,12 +392,8 @@ def export_csv():
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin_login'))
         
-    registrations = (
-        db.session.query(Registration, Event.title.label('event_title'))
-        .join(Event)
-        .order_by(Event.title, Registration.student_name)
-        .all()
-    )
+    sync_event_registration_counts()
+    registrations = get_registrations_with_event_titles()
 
     # Build CSV in memory
     si = io.StringIO()
@@ -366,14 +403,14 @@ def export_csv():
     cw.writerow(['Student Name', 'Email Address', 'Roll Number', 'Branch/Department', 'Registered Event', 'Registration Date'])
 
     # Write Rows
-    for reg, event_title in registrations:
+    for reg in registrations:
         cw.writerow([
-            reg.student_name,
-            reg.student_email,
-            reg.student_roll,
-            reg.student_branch,
-            event_title,
-            reg.registration_date,
+            reg['student_name'],
+            reg['student_email'],
+            reg['student_roll'],
+            reg['student_branch'],
+            reg['event_title'],
+            reg['registration_date'],
         ])
         
     output = make_response(si.getvalue())
@@ -382,6 +419,254 @@ def export_csv():
     return output
 
 # ------------------------------------------
+
+
+
+# Api for angular
+from flask import request, jsonify
+@app.route('/api/events', methods=['GET'])
+def api1_get_events():
+
+    sync_event_registration_counts()
+    events = Event.query.order_by(Event.date.asc()).all()
+
+    data = []
+
+    for event in events:
+        data.append({
+            "id": event.id,
+            "title": event.title,
+            "category": event.category,
+            "description": event.description,
+            "date": event.date,
+            "time": event.time,
+            "venue": event.venue,
+            "max_capacity": event.max_capacity,
+            "current_registrations": event.current_registrations
+        })
+
+    return jsonify(data), 200
+@app.route('/api/events/<int:event_id>', methods=['GET'])
+def api2_get_event(event_id):
+
+    event = Event.query.get(event_id)
+
+    if not event:
+        return jsonify({"message": "Event not found"}), 404
+
+    return jsonify({
+        "id": event.id,
+        "title": event.title,
+        "category": event.category,
+        "description": event.description,
+        "date": event.date,
+        "time": event.time,
+        "venue": event.venue,
+        "max_capacity": event.max_capacity,
+        "current_registrations": event.current_registrations
+    }), 200
+@app.route('/api/register/<int:event_id>', methods=['POST'])
+def api3_register(event_id):
+
+    event = Event.query.get(event_id)
+
+    if not event:
+        return jsonify({"message": "Event not found"}), 404
+
+    data = request.json
+
+    student_name = data.get("student_name")
+    student_email = data.get("student_email")
+    student_roll = data.get("student_roll")
+    student_branch = data.get("student_branch")
+
+    if not all([student_name, student_email, student_roll, student_branch]):
+        return jsonify({"message": "All fields are required"}), 400
+
+    if event.current_registrations >= event.max_capacity:
+        return jsonify({"message": "Event capacity full"}), 400
+
+    duplicate = Registration.query.filter(
+        Registration.event_id == event_id,
+        or_(
+            Registration.student_email == student_email,
+            Registration.student_roll == student_roll
+        )
+    ).first()
+
+    if duplicate:
+        return jsonify({"message": "Already registered"}), 400
+
+    registration = Registration(
+        event_id=event_id,
+        student_name=student_name,
+        student_email=student_email,
+        student_roll=student_roll,
+        student_branch=student_branch
+    )
+
+    db.session.add(registration)
+
+    event.current_registrations = Registration.query.filter(Registration.event_id == event_id).count()
+
+    db.session.commit()
+    sync_event_registration_counts()
+
+    return jsonify({"message": "Registration Successful"}), 201
+
+@app.route('/api/admin/login', methods=['POST'])
+def api4_admin_login():
+
+    data = request.json
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if username == config.ADMIN_USERNAME and password == config.ADMIN_PASSWORD:
+        return jsonify({
+            "success": True,
+            "message": "Login Successful"
+        }), 200
+
+    return jsonify({
+        "success": False,
+        "message": "Invalid Username or Password"
+    }), 401
+@app.route('/api/admin/add-event', methods=['POST'])
+def api5_add_event():
+
+    data = request.json or {}
+
+    title = (data.get("title") or "").strip()
+    category = (data.get("category") or "").strip()
+    description = (data.get("description") or "").strip()
+    venue = (data.get("venue") or "").strip()
+    date = (data.get("date") or "").strip()
+    time = (data.get("time") or "").strip()
+
+    try:
+        max_capacity = int(data.get("max_capacity") or 0)
+    except (TypeError, ValueError):
+        max_capacity = 0
+
+    if not all([title, category, description, venue, date, time]) or max_capacity < 1:
+        return jsonify({"message": "Please provide valid event details"}), 400
+
+    event = Event(
+        title=title,
+        category=category,
+        description=description,
+        venue=venue,
+        date=date,
+        time=time,
+        max_capacity=max_capacity,
+        current_registrations=0
+    )
+
+    db.session.add(event)
+    db.session.commit()
+    sync_event_registration_counts()
+
+    return jsonify({
+        "message": "Event Added Successfully"
+    }), 201
+@app.route('/api/admin/delete-event/<int:event_id>', methods=['DELETE'])
+def api6_delete_event(event_id):
+
+    event = Event.query.get(event_id)
+
+    if not event:
+        return jsonify({"message": "Event not found"}), 404
+
+    db.session.delete(event)
+    db.session.commit()
+    sync_event_registration_counts()
+
+    return jsonify({
+        "message": "Event Deleted Successfully"
+    }), 200
+@app.route('/api/admin/registrations', methods=['GET'])
+def api7_get_registrations():
+
+    sync_event_registration_counts()
+    registrations = get_registrations_with_event_titles()
+
+    return jsonify(registrations), 200
+
+
+@app.route('/api/admin/export-csv', methods=['GET'])
+def api8_export_csv():
+
+    sync_event_registration_counts()
+    registrations = get_registrations_with_event_titles()
+
+    si = io.StringIO()
+    cw = csv.writer(si)
+    cw.writerow(['Student Name', 'Email Address', 'Roll Number', 'Branch/Department', 'Registered Event', 'Registration Date'])
+
+    for reg in registrations:
+        cw.writerow([
+            reg['student_name'],
+            reg['student_email'],
+            reg['student_roll'],
+            reg['student_branch'],
+            reg['event_title'],
+            reg['registration_date'],
+        ])
+
+    output = make_response(si.getvalue())
+    output.headers['Content-Disposition'] = 'attachment; filename=event_registrations.csv'
+    output.headers['Content-Type'] = 'text/csv'
+    return output
+
+@app.route('/api/events/<int:event_id>/participants', methods=['GET'])
+def event_participants(event_id):
+
+    registrations = Registration.query.filter_by(
+        event_id=event_id
+    ).all()
+
+    return jsonify([
+        {
+            "name": r.student_name,
+            "email": r.student_email,
+            "roll": r.student_roll,
+            "branch": r.student_branch
+        }
+        for r in registrations
+    ]),200
+
+@app.route('/api/events/<int:event_id>/seats', methods=['GET'])
+def api16_available_seats(event_id):
+
+    event = Event.query.get(event_id)
+
+    if not event:
+        return jsonify({
+            "message": "Event not found"
+        }), 404
+
+    available = event.max_capacity - event.current_registrations
+
+    return jsonify({
+        "available_seats": available
+    }), 200
+
+@app.route('/api/health', methods=['GET'])
+def api19_health():
+
+    return jsonify({
+        "status": "Server Running Successfully"
+    }), 200
+
+@app.route('/api/admin/logout', methods=['POST'])
+def api_admin_logout():
+    session.pop('admin_logged_in', None)
+
+    return jsonify({
+        "success": True,
+        "message": "Logout Successful"
+    }), 200
 
 if __name__ == '__main__':
     init_db()
